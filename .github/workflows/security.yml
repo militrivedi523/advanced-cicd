@@ -24,14 +24,18 @@ jobs:
   sast-scanning:
     name: 2. SAST (Semgrep)
     runs-on: ubuntu-latest
-    container:
-      image: returntocorp/semgrep
     steps:
       - name: Checkout Code
         uses: actions/checkout@v4
 
-      - name: Run Semgrep SAST Scanner
-        run: semgrep ci --config=auto
+      - name: Run Semgrep Action
+        uses: semgrep/semgrep-action@v1
+        with:
+          config: >-
+            p/security-audit
+            p/secrets
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
   dependency-scanning:
     name: 3. Dependency Scanning (npm audit & Trivy)
