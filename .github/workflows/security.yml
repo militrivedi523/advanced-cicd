@@ -28,14 +28,15 @@ jobs:
       - name: Checkout Code
         uses: actions/checkout@v4
 
-      - name: Run Semgrep Action
-        uses: semgrep/semgrep-action@v1
+      - name: Setup Python
+        uses: actions/setup-python@v5
         with:
-          config: >-
-            p/security-audit
-            p/secrets
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          python-version: '3.11'
+
+      - name: Install & Run Semgrep
+        run: |
+          python -m pip install --upgrade pip semgrep
+          python -m semgrep scan --config auto
 
   dependency-scanning:
     name: 3. Dependency Scanning (npm audit & Trivy)
